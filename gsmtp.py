@@ -28,11 +28,6 @@ def gMass(mail,too):
   to = too
   
   try:
-    
-  
-
-    
-
     headers = {
         'Connection': 'keep-alive',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -56,12 +51,20 @@ def gMass(mail,too):
       'from': frm,
       'to': to
     }
+    ddos = requests.get('https://www.gmass.co/smtp-test', headers=headers)
 
     response = requests.post('https://www.gmass.co/Smtp/CreateTest', headers=headers,  data=data)
 
     #print(response.status_code)
     stat = response.status_code
-    if stat == 200:
+
+    if 'DDOS' in ddos:
+      sleep(5)
+      print("[p0n] [ This tool is not working right now, because it's under an active DDOS attack. Please try back later. ]")
+      sleep(5)
+      
+    
+    elif stat == 200:
       #print(response)
       print(' [ Test send to :'+to+' ] <= [ From :'+frm+' ]')
 
@@ -75,34 +78,57 @@ def gMass(mail,too):
       od = OrderedDict([('<pre style="background-color: black">', ''), ('</pre>', ''),('<div class="neither">',''),('<div class="client">',''),('<div class="server">',''),('</div>',''),('<div class="error">',''),('&lt;&lt;','[p0n]'),(' &gt;&gt;','[p0n]'),('    ',''),('   ','')])
       repl = replace_all(getres.text, od)
       soup = BeautifulSoup(repl,"html.parser")
-      print(soup)
+      if 'verified' in repl:
+        print(soup)
+        sleep(5)
+        xx = str(username).replace('\r', '')
+        save = open('rejectednotverified.txt', 'a')
+        save.write(xx+'\n')
+        save.close()
+      elif 'paused' in repl:
+        print(soup)
+        sleep(5)
+        xx = str(username).replace('\r', '')
+        save = open('sendpaus.txt', 'a')
+        save.write(xx+'\n')
+        save.close()
+        
+      else:
+        print(soup)
+        sleep(5)
+
       
-      sleep(3)
+    else:
+      print()
   except Exception as e:
     print(e)
   
 
 
 try:
-
-  try:
-    lists = raw_input("List SMTP : ")
-    readsplit = open(lists).read().splitlines()
-    
-  except:
-    print("Wrong input or list not found!")
-    exit()
-  try:
-      too = raw_input("Mail To : ")
-  except:
-      print("Wrong input mail!")
-      exit()
-  if 'txt' in lists:
-        # gMass(lists,too)
-        for x in readsplit:
-          # print(x)
-          # print(too)
-          gMass(x,too)
-
+  lists = input("List SMTP : ")
+  readsplit = open(lists).read().splitlines()
+  too = input("Mail To : ")
+  for x in readsplit:
+    gMass(x,too)
 except Exception as e:
   print(e)
+
+    
+#   except:
+#     print("Wrong input or list not found!")
+#     exit()
+#   try:
+      
+#   except:
+#       print("Wrong input mail!")
+#       exit()
+#   if 'txt' in lists:
+#         # gMass(lists,too)
+#         for x in readsplit:
+#           # print(x)
+#           # print(too)
+#           gMass(x,too)
+
+# except Exception as e:
+#   print(e)
